@@ -520,6 +520,12 @@ strong{font-weight:700}
     var btn=document.querySelector('.edit-contact');
     var panel=document.getElementById('contact-editor');
     if(btn&&panel){
+      // Setup is available ONLY at the ?setup entry (managers). A shared personal link
+      // (#m=...) or the bare page never exposes the editor, so an affiliate can't re-brand
+      // it and pass it on.
+      var setupMode=/[?&]setup(=|&|$)/.test(location.search);
+      if(frag || !setupMode){ btn.style.display='none'; panel.hidden=true; }
+      else {
       var inp=function(f){return panel.querySelector('[data-ce="'+f+'"]')};
       function fill(vals){FIELDS.forEach(function(f){var i=inp(f); if(i)i.value=(vals&&vals[f]!=null&&vals[f]!=='')?vals[f]:defaults[f];});}
       function open(){fill(load()); panel.hidden=false; btn.setAttribute('aria-expanded','true'); var f=panel.querySelector('input'); if(f)f.focus();}
@@ -551,6 +557,7 @@ strong{font-weight:700}
         var b=this; b.textContent=done?'Copied':'Copy';
         setTimeout(function(){b.textContent='Copy';},1200);
       });
+      }
     }
   })();
 
